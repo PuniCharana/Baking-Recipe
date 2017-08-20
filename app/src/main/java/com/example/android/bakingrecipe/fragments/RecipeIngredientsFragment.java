@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,7 @@ public class RecipeIngredientsFragment extends Fragment {
 
             mPosition = savedInstanceState.getInt(ArgKeys.SCROLLED_POSITION_ARG_ID);
             mRecipeName = savedInstanceState.getString(ArgKeys.RECIPE_NAME_ARG_ID);
-            mIngredientsList = savedInstanceState.getParcelableArrayList(ArgKeys.RECIPE_INGREDIENTS_ARG_ID);
+            mIngredientsList = savedInstanceState.getParcelableArrayList(ArgKeys.RECIPE_INGREDIENTS_LISTS_ARG_ID);
         } else {
             if (getArguments().containsKey(ArgKeys.RECIPE_INGREDIENTS_ARG_ID) &&
                     getArguments().containsKey(ArgKeys.RECIPE_NAME_ARG_ID)) {
@@ -86,13 +87,20 @@ public class RecipeIngredientsFragment extends Fragment {
         RecipeIngredientsAdapter mIngredientsAdapter = new RecipeIngredientsAdapter(getContext(), mIngredientsList);
         mRecyclerView.setAdapter(mIngredientsAdapter);
 
+//        mScrollView.scrollTo(0, mPosition);
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mScrollView.scrollTo(0, mPosition);
+
+        // I don't know why but this is working
+        mScrollView.post(new Runnable() {
+            public void run() {
+                mScrollView.scrollTo(0, mPosition);
+            }
+        });
     }
 
     @OnClick(R2.id.add_to_widget_btn)

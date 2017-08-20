@@ -31,6 +31,11 @@ public class RecipeIngredientsActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle(bundle.getString(ArgKeys.RECIPE_NAME_ARG_ID));
             }
 
+            // do not create the fragment again if already created
+            // in case of screen rotation
+            if (savedInstanceState != null)
+                return;
+
             RecipeIngredientsFragment ingredientsFragment = new RecipeIngredientsFragment();
             // send all the data to fragment
             ingredientsFragment.setArguments(bundle);
