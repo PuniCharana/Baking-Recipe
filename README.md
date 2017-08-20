@@ -16,3 +16,8 @@ git clone https://github.com/PuniCharana/Baking-Recipe.git
 * Retrofit 2.1.0
 * Glide 3.7.0
 * Gson 2.2.4
+
+### Note:
+Espresso UI test works only on api 22 above
+
+Turn off animation while testing.
