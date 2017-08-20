@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -16,7 +17,7 @@ import com.example.android.bakingrecipe.interfaces.RecipeApiService;
 import com.example.android.bakingrecipe.models.Recipe;
 import com.example.android.bakingrecipe.network.ApiClient;
 import com.example.android.bakingrecipe.utils.InternetConnectivity;
-import com.example.android.bakingrecipe.utils.RecipeContract;
+import com.example.android.bakingrecipe.utils.ArgKeys;
 
 import java.util.ArrayList;
 
@@ -39,6 +40,7 @@ public class RecipeItemsActivity extends AppCompatActivity {
     private RecipeAdapter mRecipeAdapter;
     private ArrayList<Recipe> mRecipeList = new ArrayList<>();
     private Call<ArrayList<Recipe>> mApiCall;
+    private int mLastVisibleItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +63,10 @@ public class RecipeItemsActivity extends AppCompatActivity {
         // Check if savedInstanceState is null
         // For screen rotation
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(RecipeContract.RECIPE_LIST_ARG_ID)) {
+            if (savedInstanceState.containsKey(ArgKeys.RECIPE_LIST_ARG_ID)) {
                 mRecipeList.clear();
-                mRecipeList = savedInstanceState.getParcelableArrayList(RecipeContract.RECIPE_LIST_ARG_ID);
+                mLastVisibleItem = savedInstanceState.getInt(ArgKeys.SCROLLED_POSITION_ARG_ID);
+                mRecipeList = savedInstanceState.getParcelableArrayList(ArgKeys.RECIPE_LIST_ARG_ID);
             } else {
                 // No prev data found
                 loadData();
@@ -119,12 +122,18 @@ public class RecipeItemsActivity extends AppCompatActivity {
         mErrorMessage.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRecyclerView.scrollToPosition(mLastVisibleItem);
+    }
+
     // Handle recycler view item click
     // Called from adapter
     public void recipeItemClicked(int position) {
         Recipe recipe = mRecipeList.get(position);
         Intent intent = new Intent(this, RecipeStepActivity.class);
-        intent.putExtra(RecipeContract.RECIPE_ARG_ID, recipe);
+        intent.putExtra(ArgKeys.RECIPE_ARG_ID, recipe);
         startActivity(intent);
     }
 
@@ -132,7 +141,9 @@ public class RecipeItemsActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // save the data
-        outState.putParcelableArrayList(RecipeContract.RECIPE_LIST_ARG_ID, mRecipeList);
+
+        outState.putInt(ArgKeys.SCROLLED_POSITION_ARG_ID, ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition());
+        outState.putParcelableArrayList(ArgKeys.RECIPE_LIST_ARG_ID, mRecipeList);
     }
 
     @Override

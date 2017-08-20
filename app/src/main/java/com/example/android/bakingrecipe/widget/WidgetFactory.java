@@ -11,7 +11,7 @@ import android.widget.RemoteViewsService;
 
 import com.example.android.bakingrecipe.R;
 import com.example.android.bakingrecipe.models.RecipeIngredients;
-import com.example.android.bakingrecipe.utils.RecipeContract;
+import com.example.android.bakingrecipe.utils.ArgKeys;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,12 +39,12 @@ class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         Gson gson = new Gson();
 
-        if (pref.contains(RecipeContract.RECIPE_INGREDIENTS_ARG_ID)) {
-            String jsonIngredients = pref.getString(RecipeContract.RECIPE_INGREDIENTS_ARG_ID, null);
+        if (pref.contains(ArgKeys.RECIPE_INGREDIENTS_ARG_ID)) {
+            String jsonIngredients = pref.getString(ArgKeys.RECIPE_INGREDIENTS_ARG_ID, null);
             TypeToken<ArrayList<RecipeIngredients>> token = new TypeToken<ArrayList<RecipeIngredients>>(){};
 
             recipeIngredients = gson.fromJson(jsonIngredients, token.getType());
-            recipeName = pref.getString(RecipeContract.RECIPE_NAME_ARG_ID, "Recipe name");
+            recipeName = pref.getString(ArgKeys.RECIPE_NAME_ARG_ID, "Recipe name");
         }
     }
     @Override
@@ -80,8 +80,8 @@ class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
         remoteView.setTextColor(android.R.id.text1, ContextCompat.getColor(mContext, R.color.colorBlack));
 
         Intent fillInIntent = new Intent();
-        fillInIntent.putExtra(RecipeContract.RECIPE_NAME_ARG_ID, recipeName);
-        fillInIntent.putParcelableArrayListExtra(RecipeContract.RECIPE_INGREDIENTS_ARG_ID, recipeIngredients);
+        fillInIntent.putExtra(ArgKeys.RECIPE_NAME_ARG_ID, recipeName);
+        fillInIntent.putParcelableArrayListExtra(ArgKeys.RECIPE_INGREDIENTS_ARG_ID, recipeIngredients);
         remoteView.setOnClickFillInIntent(android.R.id.text1, fillInIntent);
         return remoteView;
     }

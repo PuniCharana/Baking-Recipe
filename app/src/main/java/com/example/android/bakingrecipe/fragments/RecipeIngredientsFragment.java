@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ScrollView;
 
 import com.example.android.bakingrecipe.R;
 import com.example.android.bakingrecipe.R2;
 import com.example.android.bakingrecipe.adapters.RecipeIngredientsAdapter;
 import com.example.android.bakingrecipe.models.RecipeIngredients;
-import com.example.android.bakingrecipe.utils.RecipeContract;
+import com.example.android.bakingrecipe.utils.ArgKeys;
 import com.example.android.bakingrecipe.widget.WidgetProvider;
 import com.google.gson.Gson;
 
@@ -28,20 +29,27 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RecipeIngredientsFragment extends Fragment {
 
-
     private ArrayList<RecipeIngredients> mIngredientsList = new ArrayList<>();
+    private String mRecipeName;
 
     @BindView(R2.id.add_to_widget_btn)
-    Button buttonAddToWodget;
+    Button mButtonAddToWidget;
 
     @BindView(R2.id.rv_recipe_ingredients)
     RecyclerView mRecyclerView;
+
+    @BindView(R2.id.parent_scroll_view_ingredient)
+    ScrollView mScrollView;
+
+    private LinearLayoutManager linearLayoutManager;
+    private int mPosition = 0;
 
     public RecipeIngredientsFragment() {
         // Required empty public constructor
@@ -52,44 +60,58 @@ public class RecipeIngredientsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_recipe_ingredients, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_recipe_ingredients, container, false);
 
         ButterKnife.bind(this, rootView);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
-        if (getArguments().containsKey(RecipeContract.RECIPE_INGREDIENTS_ARG_ID) &&
-                getArguments().containsKey(RecipeContract.RECIPE_NAME_ARG_ID)) {
+        if (savedInstanceState != null &&
+                savedInstanceState.containsKey(ArgKeys.RECIPE_NAME_ARG_ID) &&
+                savedInstanceState.containsKey(ArgKeys.RECIPE_INGREDIENTS_LISTS_ARG_ID)) {
 
-            mIngredientsList = getArguments().getParcelableArrayList(RecipeContract.RECIPE_INGREDIENTS_ARG_ID);
-            RecipeIngredientsAdapter mIngredientsAdapter = new RecipeIngredientsAdapter(getContext(), mIngredientsList);
-            mRecyclerView.setAdapter(mIngredientsAdapter);
+            mPosition = savedInstanceState.getInt(ArgKeys.SCROLLED_POSITION_ARG_ID);
+            mRecipeName = savedInstanceState.getString(ArgKeys.RECIPE_NAME_ARG_ID);
+            mIngredientsList = savedInstanceState.getParcelableArrayList(ArgKeys.RECIPE_INGREDIENTS_ARG_ID);
+        } else {
+            if (getArguments().containsKey(ArgKeys.RECIPE_INGREDIENTS_ARG_ID) &&
+                    getArguments().containsKey(ArgKeys.RECIPE_NAME_ARG_ID)) {
+
+                mRecipeName = getArguments().getString(ArgKeys.RECIPE_NAME_ARG_ID);
+                mIngredientsList = getArguments().getParcelableArrayList(ArgKeys.RECIPE_INGREDIENTS_ARG_ID);
+            }
         }
 
-        buttonAddToWodget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String recipeName = getArguments().getString(RecipeContract.RECIPE_NAME_ARG_ID);
-
-                Gson gson = new Gson();
-                String jsonIngredient = gson.toJson(mIngredientsList);
-
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                SharedPreferences.Editor editor;
-                editor = pref.edit();
-                editor.putString(RecipeContract.RECIPE_NAME_ARG_ID, recipeName);
-                editor.putString(RecipeContract.RECIPE_INGREDIENTS_ARG_ID, jsonIngredient);
-                editor.apply();
-
-                updateAllWidgets();
-                Toast.makeText(getContext(), "Added to widget", Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        RecipeIngredientsAdapter mIngredientsAdapter = new RecipeIngredientsAdapter(getContext(), mIngredientsList);
+        mRecyclerView.setAdapter(mIngredientsAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mScrollView.scrollTo(0, mPosition);
+    }
+
+    @OnClick(R2.id.add_to_widget_btn)
+    public void addToWidget(View view) {
+        String recipeName = getArguments().getString(ArgKeys.RECIPE_NAME_ARG_ID);
+        Gson gson = new Gson();
+        String jsonIngredient = gson.toJson(mIngredientsList);
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor;
+        editor = pref.edit();
+        editor.putString(ArgKeys.RECIPE_NAME_ARG_ID, recipeName);
+        editor.putString(ArgKeys.RECIPE_INGREDIENTS_ARG_ID, jsonIngredient);
+        editor.apply();
+
+        updateAllWidgets();
+
+        Snackbar.make(view, "Added to home widget", Snackbar.LENGTH_LONG).show();
+
     }
 
     private void updateAllWidgets(){
@@ -100,4 +122,12 @@ public class RecipeIngredientsFragment extends Fragment {
         getContext().sendBroadcast(widgetUpdater);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(ArgKeys.SCROLLED_POSITION_ARG_ID, mScrollView.getScrollY());
+        outState.putParcelableArrayList(ArgKeys.RECIPE_INGREDIENTS_LISTS_ARG_ID, mIngredientsList);
+        outState.putString(ArgKeys.RECIPE_NAME_ARG_ID, mRecipeName);
+    }
 }

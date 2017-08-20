@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.example.android.bakingrecipe.R;
 import com.example.android.bakingrecipe.fragments.RecipeIngredientsFragment;
-import com.example.android.bakingrecipe.utils.RecipeContract;
+import com.example.android.bakingrecipe.utils.ArgKeys;
 
 public class RecipeIngredientsActivity extends AppCompatActivity {
 
@@ -23,12 +23,12 @@ public class RecipeIngredientsActivity extends AppCompatActivity {
         // This activity can be started from widget and RecipeStepDetailsActivity
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle.containsKey(RecipeContract.RECIPE_NAME_ARG_ID) &&
-        bundle.containsKey(RecipeContract.RECIPE_INGREDIENTS_ARG_ID)) {
+        if (bundle.containsKey(ArgKeys.RECIPE_NAME_ARG_ID) &&
+        bundle.containsKey(ArgKeys.RECIPE_INGREDIENTS_ARG_ID)) {
 
             // Set title with the current Recipe name
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(bundle.getString(RecipeContract.RECIPE_NAME_ARG_ID));
+                getSupportActionBar().setTitle(bundle.getString(ArgKeys.RECIPE_NAME_ARG_ID));
             }
 
             RecipeIngredientsFragment ingredientsFragment = new RecipeIngredientsFragment();
@@ -40,8 +40,5 @@ public class RecipeIngredientsActivity extends AppCompatActivity {
         } else {
             finish();
         }
-
-
-
     }
 }

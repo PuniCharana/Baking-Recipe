@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.example.android.bakingrecipe.R;
 import com.example.android.bakingrecipe.fragments.RecipeStepDetailsFragment;
-import com.example.android.bakingrecipe.utils.RecipeContract;
+import com.example.android.bakingrecipe.utils.ArgKeys;
 
 public class RecipeStepDetailsActivity extends AppCompatActivity {
 
@@ -16,13 +16,13 @@ public class RecipeStepDetailsActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
-        if (bundle.containsKey(RecipeContract.RECIPE_STEPS_ARG_ID) &&
-                bundle.containsKey(RecipeContract.RECIPE_NAME_ARG_ID) &&
-                bundle.containsKey(RecipeContract.RECIPE_POSITION_ARG_ID)) {
+        if (bundle.containsKey(ArgKeys.RECIPE_STEPS_ARG_ID) &&
+                bundle.containsKey(ArgKeys.RECIPE_NAME_ARG_ID) &&
+                bundle.containsKey(ArgKeys.RECIPE_POSITION_ARG_ID)) {
 
             if(getSupportActionBar() != null) {
                 // set title
-                getSupportActionBar().setTitle(bundle.getString(RecipeContract.RECIPE_NAME_ARG_ID));
+                getSupportActionBar().setTitle(bundle.getString(ArgKeys.RECIPE_NAME_ARG_ID));
             }
 
             RecipeStepDetailsFragment recipeStepDetailsFragment = new RecipeStepDetailsFragment();

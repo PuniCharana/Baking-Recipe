@@ -11,7 +11,7 @@ import android.widget.RemoteViews;
 
 import com.example.android.bakingrecipe.R;
 import com.example.android.bakingrecipe.activities.RecipeIngredientsActivity;
-import com.example.android.bakingrecipe.utils.RecipeContract;
+import com.example.android.bakingrecipe.utils.ArgKeys;
 
 /**
  * Implementation of App Widget functionality.
@@ -28,7 +28,7 @@ public class WidgetProvider extends AppWidgetProvider {
         views.setRemoteAdapter(R.id.widget_list, widgetIntent);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        views.setTextViewText(R.id.widget_title, pref.getString(RecipeContract.RECIPE_NAME_ARG_ID, "Recipe name"));
+        views.setTextViewText(R.id.widget_title, pref.getString(ArgKeys.RECIPE_NAME_ARG_ID, "Recipe name"));
 
         // Create pending intent so that when an item is clicked the intent will fired
         Intent intent = new Intent(context, RecipeIngredientsActivity.class);

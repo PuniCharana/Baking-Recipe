@@ -24,7 +24,7 @@ import com.bumptech.glide.Glide;
 import com.example.android.bakingrecipe.R;
 import com.example.android.bakingrecipe.R2;
 import com.example.android.bakingrecipe.models.RecipeStep;
-import com.example.android.bakingrecipe.utils.RecipeContract;
+import com.example.android.bakingrecipe.utils.ArgKeys;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -54,13 +54,14 @@ import butterknife.OnClick;
  */
 public class RecipeStepDetailsFragment extends Fragment implements ExoPlayer.EventListener{
 
+
     private static final String LOG_TAG = RecipeStepDetailsFragment.class.getSimpleName();
-    private ArrayList<RecipeStep> recipeSteps;
+    private ArrayList<RecipeStep> mRecipeStepsLists;
     private int mPosition;
 
-    @BindView(R2.id.next_btn) Button nextButton;
+    @BindView(R2.id.next_btn) Button mNextButton;
 
-    @BindView(R2.id.prev_btn) Button prevButton;
+    @BindView(R2.id.prev_btn) Button mPrevButton;
 
     @BindView(R2.id.playerView) SimpleExoPlayerView mExoPlayerView;
 
@@ -85,16 +86,31 @@ public class RecipeStepDetailsFragment extends Fragment implements ExoPlayer.Eve
 
         ButterKnife.bind(this, rootView);
 
-        recipeSteps = getArguments().getParcelableArrayList(RecipeContract.RECIPE_STEPS_ARG_ID);
-        mPosition = getArguments().getInt(RecipeContract.RECIPE_POSITION_ARG_ID);
-
-        setUpUI();
+        if (savedInstanceState != null) {
+            mRecipeStepsLists = savedInstanceState.getParcelableArrayList(ArgKeys.RECIPE_STEPS_ARG_ID);
+            mPosition = savedInstanceState.getInt(ArgKeys.RECIPE_POSITION_ARG_ID);
+        } else {
+            mRecipeStepsLists = getArguments().getParcelableArrayList(ArgKeys.RECIPE_STEPS_ARG_ID);
+            mPosition = getArguments().getInt(ArgKeys.RECIPE_POSITION_ARG_ID);
+        }
         return rootView;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        cleanUpVideo();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUpUI();
     }
 
     @OnClick(R2.id.next_btn)
     public void nextRecipe(View view) {
-        if (mPosition < recipeSteps.size()-1) {
+        if (mPosition < mRecipeStepsLists.size()-1) {
             mPosition = mPosition+1;
             cleanUpVideo();
             setUpUI();
@@ -112,8 +128,7 @@ public class RecipeStepDetailsFragment extends Fragment implements ExoPlayer.Eve
 
     private void setUpUI(){
 
-        RecipeStep recipeStep = recipeSteps.get(mPosition);
-
+        RecipeStep recipeStep = mRecipeStepsLists.get(mPosition);
 
         // Hide or show video frame
         if (TextUtils.isEmpty(recipeStep.getVideoURL())) {
@@ -158,18 +173,25 @@ public class RecipeStepDetailsFragment extends Fragment implements ExoPlayer.Eve
         }
 
         // Hide or show next button
-        if (mPosition == recipeSteps.size()-1) {
-            nextButton.setVisibility(View.GONE);
+        if (mPosition == mRecipeStepsLists.size()-1) {
+            mNextButton.setVisibility(View.GONE);
         } else {
-            nextButton.setVisibility(View.VISIBLE);
+            mNextButton.setVisibility(View.VISIBLE);
         }
 
         // Hide or show prev button
         if (mPosition == 0) {
-            prevButton.setVisibility(View.GONE);
+            mPrevButton.setVisibility(View.GONE);
         } else {
-            prevButton.setVisibility(View.VISIBLE);
+            mPrevButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ArgKeys.SCROLLED_POSITION_ARG_ID, mPosition);
+        outState.putParcelableArrayList(ArgKeys.RECIPE_INGREDIENTS_LISTS_ARG_ID, mRecipeStepsLists);
     }
 
     /**
