@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Baking Recipe</string>
+
+    <string name="add_widget">Add widget</string>
+    <string name="recipe_not_found">Recipe not found</string>
+    <string name="label_error_message">Error message</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="label_widget_title">Widget Title</string>
+    <string name="add_to_widget">Add to widget</string>
+    <string name="btn_next">Next</string>
+    <string name="btn_prev">Prev</string>
+    <string name="label_step_description">Lorem Ipsum</string>
+    <string name="img_step_description">Step description</string>
+    <string name="recipe_image">Recipe Image</string>
+    <string name="label_recipe_name">Recipe Name</string>
+    <string name="label_ingredients">1. Coconut 2 CUP</string>
+    <string name="label_position">1</string>
+    <string name="label_recipe_step_description">Recipe steps description</string>
+    <string name="img_video_icon">Video Icon</string>
+    <string name="img_comment_icon">Comment Icon</string>
+    <string name="img_ingredients_icon">Ingredients icon</string>
+    <string name="ingredients_lists">Ingredients Lists</string>
+    <string name="label_ingredients_count">12 Ingredients</string>
+</resources>

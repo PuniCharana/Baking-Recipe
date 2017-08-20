@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        tools:text="@string/label_position"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        android:paddingRight="10dp"
+        android:id="@+id/tv_step_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        tools:text="@string/label_recipe_step_description"
+        android:id="@+id/tv_recipe_steps_description"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:contentDescription="@string/img_video_icon"
+        android:id="@+id/iv_recipe_video"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_video"
+        android:paddingLeft="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+    <ImageView
+        android:contentDescription="@string/img_comment_icon"
+        android:id="@+id/iv_recipe_description"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_comment"
+        android:paddingLeft="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+
+</LinearLayout>
