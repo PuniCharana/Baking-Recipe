@@ -191,7 +191,7 @@ public class RecipeStepDetailsFragment extends Fragment implements ExoPlayer.Eve
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(ArgKeys.SCROLLED_POSITION_ARG_ID, mPosition);
-        outState.putParcelableArrayList(ArgKeys.RECIPE_INGREDIENTS_LISTS_ARG_ID, mRecipeStepsLists);
+        outState.putParcelableArrayList(ArgKeys.RECIPE_STEPS_ARG_ID, mRecipeStepsLists);
     }
 
     /**

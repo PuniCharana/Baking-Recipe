@@ -11,6 +11,7 @@
     android:showDividers="middle">
 
     <ScrollView
+        android:id="@+id/parent_scroll_view_step"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent">

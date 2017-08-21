@@ -65,6 +65,7 @@ public class RecipeStepActivity extends AppCompatActivity {
                 savedInstanceState.containsKey(ArgKeys.RECIPE_NAME_ARG_ID) &&
                 savedInstanceState.containsKey(ArgKeys.RECIPE_INGREDIENTS_LISTS_ARG_ID) &&
                 savedInstanceState.containsKey(ArgKeys.RECIPE_STEPS_LIST_ARG_ID)) {
+
             mPosition = savedInstanceState.getInt(ArgKeys.SCROLLED_POSITION_ARG_ID);
             mRecipeName = savedInstanceState.getString(ArgKeys.RECIPE_NAME_ARG_ID);
             mRecipeIngredientsList = savedInstanceState.getParcelableArrayList(ArgKeys.RECIPE_INGREDIENTS_LISTS_ARG_ID);
@@ -108,7 +109,11 @@ public class RecipeStepActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mScrollView.scrollTo(0, mPosition);
+        mScrollView.post(new Runnable() {
+            public void run() {
+                mScrollView.scrollTo(0, mPosition);
+            }
+        });
     }
 
     /*
